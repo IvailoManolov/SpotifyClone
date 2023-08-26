@@ -11,7 +11,7 @@ import { createContext, useEffect, useState } from "react";
 
 type UserContextType = {
     accessToken: string | null;
-    user: User;
+    user: User | null;
     userDetails: UserDetails | null;
     isLoading: boolean;
     subscription: Subscription | null;
@@ -80,8 +80,17 @@ export const MyUserContextProvider = (props: Props) => {
             }
         }
 
-
         fetchData();
 
     }, [user, isLoadingUser]);
-}
+
+    const value = {
+        accessToken,
+        user,
+        userDetails,
+        isLoading: isLoadingUser || isLoading,
+        subscription: subscriptionDetails
+    };
+
+    return <UserContext.Provider value={value} {...props} />
+};
