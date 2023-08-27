@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
 
             <div className="w-full mb-4 flex items-center justify-between">
 
-                {/* Desktop View (Arrow Views) */}
+                {/* View (Arrow Views) */}
                 <div className="hidden md:flex gap-x-2 items-center">
                     <button onClick={() => router.back} className="rounded-full bg-black flex items-center justify-center hover:opacity-75 transition">
                         <RxCaretLeft className="text-white" size={35} />
@@ -61,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
                     </button>
                 </div>
 
-                {/* Mobile View (Home/Search View) */}
+                {/* View (Home/Search View) */}
                 <div className="flex md:hidden gap-x-2 items-center">
                     <button className="rounded-full p-2 bg-white flex items-center justify-center hover:opacity-75 transition">
                         <HiHome className='text-black' size={20} />
@@ -79,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
                                 Logout
                             </Button>
 
-                            <Button onClick={() => router.push('/account')}>
+                            <Button onClick={() => router.push('/account')} className="bg-white">
                                 <FaUserAlt />
                             </Button>
                         </div>
@@ -94,7 +94,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
 
                             {/* LOG IN  */}
                             <div>
-                                <Button onClick={authModal.onOpen} className="bg-white px-6 py-2" >
+                                <Button onClick={authModal.onOpen} className="bg-white px-6 py-" >
                                     Log In
                                 </Button>
                             </div>
