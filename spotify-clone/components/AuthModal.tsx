@@ -1,16 +1,17 @@
 "use client";
 
+import { useEffect } from "react";
+
 import {
     useSessionContext
     , useSupabaseClient
 } from "@supabase/auth-helpers-react";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 
 import Modal from "./Modal";
 
 import { useRouter } from "next/navigation";
-
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
 
 import useAuthModal from "@/hooks/useAuthModal";
 
@@ -23,6 +24,15 @@ const AuthModal = () => {
 
     const { onClose, isOpen } = useAuthModal();
 
+    useEffect(() => {
+
+        if (session) {
+            router.refresh();
+            onClose();
+        }
+
+    }, [session, router, onClose]);
+
     const onChange = (open: boolean) => {
         if (!open) {
             onClose();
@@ -32,8 +42,7 @@ const AuthModal = () => {
     return (
         <Modal title="Welcome back" description="Login to your account" isOpen={isOpen} onChange={onChange}>
             <Auth theme="dark"
-                magicLink
-                providers={['apple', 'google']}
+                providers={['github']}
                 supabaseClient={supabaseClient}
                 appearance={{
                     theme: ThemeSupa,
