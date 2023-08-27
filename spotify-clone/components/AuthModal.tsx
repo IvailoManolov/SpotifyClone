@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 
 import useAuthModal from "@/hooks/useAuthModal";
 
+import { toast } from "react-hot-toast";
+
 const AuthModal = () => {
     const supabaseClient = useSupabaseClient();
 
@@ -28,6 +30,7 @@ const AuthModal = () => {
 
         if (session) {
             router.refresh();
+            toast.success('Logged In!');
             onClose();
         }
 
