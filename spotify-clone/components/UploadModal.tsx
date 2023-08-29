@@ -18,6 +18,8 @@ import uniqid from "uniqid";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
 
+import BeatLoader from "react-spinners/BeatLoader";
+
 const UploadModal = () => {
     const { user } = useUser();
 
@@ -167,6 +169,18 @@ const UploadModal = () => {
                         accept="image/*"
                         {...register('image', { required: true })}
                     />
+                </div>
+
+                <div className="flex px-2 py-2 items-center justify-center relative">
+
+                    <BeatLoader
+                        color={"#1DB954"}
+                        loading={isLoading}
+                        size={15}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                    />
+
                 </div>
 
                 <Button disabled={isLoading} type='submit'>
