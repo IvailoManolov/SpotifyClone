@@ -27,7 +27,7 @@ const MediaItem: React.FC<MediaItemProps> = ({ data, onClick }) => {
 
             {/* Images of songs inside library */}
             <div className="relative rounded-md min-h-[48px] min-w-[48px] overflow-hidden">
-                <Image fill src={imageUrl || '/images/liked.png'} alt="Media Item" className="object-cover" />
+                <Image fill src={imageUrl || '/liked.png'} alt="Media Item" className="object-cover" />
             </div>
 
             <div className="flex flex-col gap-y-1 overflow-hidden">
