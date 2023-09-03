@@ -24,6 +24,8 @@ const PlayerContent: React.FC<PlayerContentProps> = ({ song, songUrl }) => {
 
     const [volume, setVolume] = useState(1);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [audioDuration, setAudioDuration] = useState('0:00');
+    const [elapsedTime, setElapsedTime] = useState(0);
 
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;
     const VolumenIcon = volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
@@ -70,13 +72,59 @@ const PlayerContent: React.FC<PlayerContentProps> = ({ song, songUrl }) => {
     }
     );
 
+    // Hook to Load and play a song
     useEffect(() => {
         sound?.play();
 
+        // END Time of a Song.
+        const audio = new Audio(songUrl);
+
+        audio.addEventListener('loadedmetadata', () => {
+            const minutes = Math.floor(audio.duration / 60);
+            const seconds = Math.floor(audio.duration % 60);
+            setAudioDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+        });
+
         return () => {
             sound?.unload();
+            audio.removeEventListener('loadedmetadata', () => { });
         }
     }, [sound]);
+
+    //Hook to keep track of elapsed time in a song.
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout | undefined;
+
+        if (isPlaying) {
+            intervalId = setInterval(() => {
+                setElapsedTime((prevElapsedTime) => prevElapsedTime + 1);
+            }, 1000);
+        } else {
+            clearInterval(intervalId);
+        }
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [isPlaying, elapsedTime]);
+
+    const formatTime = (timeInSeconds: number) => {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = Math.floor(timeInSeconds % 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    function timeStringToSeconds(timeString: string): number {
+        const [minutesStr, secondsStr] = timeString.split(':');
+        const minutes = parseInt(minutesStr, 10);
+        const seconds = parseInt(secondsStr, 10);
+
+        if (!isNaN(minutes) && !isNaN(seconds)) {
+            return minutes * 60 + seconds;
+        }
+
+        return 0; // Default to 0 if the input is not a valid time format.
+    }
 
     const handlePlay = () => {
         if (!isPlaying) {
@@ -112,21 +160,34 @@ const PlayerContent: React.FC<PlayerContentProps> = ({ song, songUrl }) => {
             </div>
 
             {/*Desktop View / Pause or Play Button */}
-            <div className="hidden h-full md:flex justify-center items-center w-full max-w-[722px] gap-x-6">
+            <div className="hidden h-full md:flex flex-col justify-center items-center w-full max-w-[722px] gap-x-6">
+                <div className="flex items-center justify-center gap-x-6">
+                    <AiFillStepBackward onClick={onPlayPrevious} size={30} className='text-neutral-400 cursor-pointer hover:text-white transition' />
 
-                <AiFillStepBackward onClick={onPlayPrevious} size={30} className='text-neutral-400 cursor-pointer hover:text-white transition' />
+                    <div onClick={handlePlay} className="flex items-center justify-center h-10 w-10 rounded-full bg-white p-1 cursor-pointer">
+                        <Icon size={30} className='text-black' />
+                    </div>
 
-                <div onClick={handlePlay} className="flex items-center justify-center h-10 w-10 rounded-full bg-white p-1 cursor-pointer">
-                    <Icon size={30} className='text-black' />
+                    <AiFillStepForward onClick={onPlayNext} size={30} className='text-neutral-400 cursor-pointer hover:text-white transition' />
                 </div>
 
-                <AiFillStepForward onClick={onPlayNext} size={30} className='text-neutral-400 cursor-pointer hover:text-white transition' />
+                {/** Music Slider**/}
+                <div className="flex items-center gap-x-4 w-[550px]">
+                    <div >
+                        <h2 className="text-gray-500 text-sm font-semibold py-1" >{formatTime(elapsedTime)}</h2>
+                    </div>
+                    <Slider value={elapsedTime} possibleMax={timeStringToSeconds(audioDuration)} />
+                    <div>
+                        <h2 className="text-gray-500 text-sm font-semibold py-1">{audioDuration}</h2>
+                    </div>
+                </div>
             </div>
 
+            {/**Volume Button**/}
             <div className="hidden md:flex w-full justify-end pr-2">
                 <div className="flex items-center gap-x-2 w-[120px]">
                     <VolumenIcon onClick={toggleMute} size={32} className='cursor-pointer' />
-                    <Slider value={volume} onChange={(value) => setVolume(value)} />
+                    <Slider value={volume} possibleMax={1} onChange={(value) => setVolume(value)} />
                 </div>
             </div>
 
