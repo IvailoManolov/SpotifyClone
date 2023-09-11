@@ -58,7 +58,6 @@ const upsertPriceRecord = async (price: Stripe.Price) => {
         metadata: price.metadata
     };
 
-
     const { error } = await supabaseAdmin
         .from('prices')
         .upsert([priceData]);
@@ -86,7 +85,7 @@ const createOrRetrieveACustomer = async ({
     // If no active customer
     if (error || !data?.stripe_customer_id) {
 
-        const customerData: { metadata: { supabaseUUID: string }; email?: string } = {]
+        const customerData: { metadata: { supabaseUUID: string }; email?: string } = {
             metadata: {
                 supabaseUUID: uuid
             }
