@@ -1,3 +1,4 @@
+
 import { Song } from "@/types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -12,7 +13,6 @@ const getSongsByUserId = async (): Promise<Song[]> => {
         error: sessionError } = await supabase.auth.getSession();
 
     if (sessionError) {
-        toast.error('Error getting songs by id');
         console.log(sessionError.message);
         return [];
     }
@@ -24,7 +24,6 @@ const getSongsByUserId = async (): Promise<Song[]> => {
         .order('created_at', { ascending: false });
 
     if (error) {
-        toast.error('Error gettings songs from supabase');
         console.log(error.message);
     }
 
