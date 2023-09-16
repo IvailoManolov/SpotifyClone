@@ -73,6 +73,7 @@ export const MyUserContextProvider = (props: Props) => {
                     console.log("Problem with accquiring user subscription");
                 }
 
+                setIsLoading(false);
             }
             else if (!user && !isLoadingUser && !isLoading) {
                 setUserDetails(null);
